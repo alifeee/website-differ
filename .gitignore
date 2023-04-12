@@ -1,0 +1,7 @@
+# .gitignore
+
+# python
+/env
+
+# secrets
+.env
