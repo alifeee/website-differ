@@ -9,7 +9,8 @@ pb = Pushbullet(PUSHBULLET_ACCESS_TOKEN)
 
 
 def notify(title, message):
-    push = pb.push_note(title, message)
+    prepend = "Website Monitor: "
+    push = pb.push_note(prepend + title, message)
 
 
 def notify_file(filename, file_content):
