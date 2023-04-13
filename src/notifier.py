@@ -4,8 +4,16 @@ import os
 
 load_dotenv()
 
-PUSHBULLET_ACCESS_TOKEN = os.getenv("PUSHBULLET_ACCESS_TOKEN")
-pb = Pushbullet(PUSHBULLET_ACCESS_TOKEN)
+try:
+    PUSHBULLET_ACCESS_TOKEN = os.environ["PUSHBULLET_ACCESS_TOKEN"]
+except KeyError as e:
+    raise e from EnvironmentError(
+        "PUSHBULLET_ACCESS_TOKEN not set. Please set it in .env. See README.md for more info.")
+try:
+    pb = Pushbullet(PUSHBULLET_ACCESS_TOKEN)
+except Exception as e:
+    raise e from Exception(
+        "Error while connecting to Pushbullet. Please check your PUSHBULLET_ACCESS_TOKEN. See README.md for more info.")
 
 
 def notify(title: str, message: str):

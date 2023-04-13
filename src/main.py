@@ -5,8 +5,11 @@ from database import Database
 if __name__ == "__main__":
     db = Database("websites.db")
 
-    with open("urls.txt", "r") as f:
-        urls = f.read().splitlines()
+    try:
+        with open("urls.txt", "r") as f:
+            urls = f.read().splitlines()
+    except Exception as e:
+        raise e from Exception("Error reading urls.txt. Does it exist?")
 
     for url in urls:
         last_date, last_content = db.getLatest(url)
