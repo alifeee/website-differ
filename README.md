@@ -46,7 +46,7 @@ python src/main.py
 | ---- | ------- |
 | [pushbullet.py](https://github.com/richard-better/pushbullet.py) | 0.12.0 |
 | [requests](https://github.com/psf/requests) | 2.28.0 |
-| [sqlite3](https://docs.python.org/3/library/sqlite3.html) | base dependency |
+| [sqlite3](https://docs.python.org/3/library/sqlite3.html) | base dependency [(pi note)](./SQLITE3_on_PI.md) |
 
 ### Set up virtual environment
 
