@@ -21,6 +21,12 @@ class Database:
     def __init__(self, db):
         self.conn = sqlite3.connect(db)
         self.cursor = self.conn.cursor()
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS queries (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL, datetime DATETIME NOT NULL, snapshot_id INTEGER NOT NULL, FOREIGN KEY (snapshot_id) REFERENCES snapshots(id))"
+        )
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS snapshots (id INTEGER PRIMARY KEY AUTOINCREMENT, snapshot BLOB NOT NULL)"
+        )
         self.conn.commit()
 
     def add(self, url, snapshot_string):
