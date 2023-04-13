@@ -6,7 +6,20 @@ It does not continually run, but is intended to be run as a cron job.
 
 It does not use a headless browser, but instead uses the requests library to get the HTML of the page. This means that it is not as accurate as a headless browser, and if a website uses javascript to render some of a page, it will not be able to detect this.
 
+![Example notification on pushbullet, showing website URL and the new HTML file](images/pushbullet_ping.png)
+
 ## Usage
+
+The website URLs are stored in `urls.txt`, which is not tracked by git.
+
+### `urls.txt`
+
+```txt
+https://www.example.com
+https://www.example.org
+```
+
+### Run
 
 ```bash
 python src/main.py
@@ -58,7 +71,11 @@ PUSHBULLET_ACCESS_TOKEN=...
 
 See more information on <https://pypi.org/project/pushbullet.py/0.9.1/>.
 
-### Set up database
+## Database
+
+SQLite is used for the database, which is stored in a local file `websites.db`. This is not tracked by git.
+
+### Create database
 
 ```bash
 sqlite3 websites.db < schema.sql
@@ -68,16 +85,9 @@ sqlite3 websites.db < schema.sql
 
 ```bash
 sqlite3 websites.db
-```
-
-```sql
-SELECT * FROM queries;
-```
-
-### Set up urls to check
-
-They are tracked in `urls.txt`.
-
-```bash
-echo "https://www.example.com" > urls.txt
+> .tables
+> .schema
+> .headers on
+> SELECT * FROM queries;
+> ...
 ```
