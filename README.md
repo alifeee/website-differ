@@ -19,6 +19,12 @@ https://www.example.com
 https://www.example.org
 ```
 
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Run
 
 ```bash
@@ -46,12 +52,6 @@ python src/main.py
 
 ```bash
 py -m venv env
-```
-
-### Install dependencies
-
-```bash
-pip install -r requirements.txt
 ```
 
 ### Save dependencies
