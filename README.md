@@ -22,7 +22,16 @@ pip install -r requirements.txt
 pip freeze > requirements.txt
 ```
 
-### Set up local mail server
+### Secrets
+
+These are stored in a `.env` file.
+
+```.env
+PUSHBULLET_ACCESS_TOKEN=...
+```
+
+The pushbullet access token can be found in the [Pushbullet settings](https://www.pushbullet.com/#settings/account). See more information on <https://pypi.org/project/pushbullet.py/0.9.1/>.
+
 
 ```bash
 python -m smtpd -n DebuggingServer localhost:1025
