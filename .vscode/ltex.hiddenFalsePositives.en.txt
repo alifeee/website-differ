@@ -1,0 +1,1 @@
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QIt does not use a headless browser, but instead uses the requests library to get the HTML of the page.\\E$"}
