@@ -24,7 +24,7 @@ if __name__ == "__main__":
             print(f"New website: {url}")
         elif last_content != website_content:
             notify("Website changed", url)
-            notify_file(new_site.html, website_content)
+            notify_file("new_site.html", website_content)
             print(f"Change for {url}")
         elif last_content == website_content:
             print(f"No change for {url}")

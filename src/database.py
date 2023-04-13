@@ -29,8 +29,8 @@ class Database:
         )
         self.conn.commit()
 
-    def add(self, url, snapshot_string):
-        snapshot_bytes = snapshot_string.encode("utf-8")
+    def add(self, url: str, snapshot: str):
+        snapshot_bytes = snapshot.encode("utf-8")
         snapshot_compressed = zlib.compress(snapshot_bytes)
         query = self.cursor.execute(
             "SELECT * FROM snapshots WHERE snapshot=?", (snapshot_compressed,)
@@ -50,7 +50,7 @@ class Database:
         )
         self.conn.commit()
 
-    def getLatest(self, url):
+    def getLatest(self, url: str):
         query = self.cursor.execute(
             "SELECT * FROM queries WHERE url=? ORDER BY datetime DESC LIMIT 1",
             (url,),
@@ -68,8 +68,8 @@ class Database:
             raise Exception("Snapshot not found")
         snapshot_compressed = row[1]
         snapshot_bytes = zlib.decompress(snapshot_compressed)
-        snapshot_string = snapshot_bytes.decode("utf-8")
-        return (datetime, snapshot_string)
+        snapshot = snapshot_bytes.decode("utf-8")
+        return (datetime, snapshot)
 
     def __del__(self):
         self.conn.close()

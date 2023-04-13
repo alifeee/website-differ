@@ -8,12 +8,12 @@ PUSHBULLET_ACCESS_TOKEN = os.getenv("PUSHBULLET_ACCESS_TOKEN")
 pb = Pushbullet(PUSHBULLET_ACCESS_TOKEN)
 
 
-def notify(title, message):
+def notify(title: str, message: str):
     prepend = "Website Monitor: "
     push = pb.push_note(prepend + title, message)
 
 
-def notify_file(filename, file_content):
+def notify_file(filename: str, file_content: str):
     file_data = pb.upload_file(file_content, filename)
     push = pb.push_file(**file_data)
 
