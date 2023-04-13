@@ -43,3 +43,11 @@ sqlite3 websites.db < schema.sql
 ```bash
 sqlite3 websites.db < "select * from queries"
 ```
+
+### Set up urls to check
+
+They are tracked in `urls.txt`.
+
+```bash
+echo "https://www.example.com" > urls.txt
+```

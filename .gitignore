@@ -5,7 +5,8 @@
 **/__pycache__
 
 # secrets
-.env
+/urls.txt
+/.env
 
 # database
-websites.db
+/websites.db
