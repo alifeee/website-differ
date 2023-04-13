@@ -32,16 +32,14 @@ PUSHBULLET_ACCESS_TOKEN=...
 
 The pushbullet access token can be found in the [Pushbullet settings](https://www.pushbullet.com/#settings/account). See more information on <https://pypi.org/project/pushbullet.py/0.9.1/>.
 
+### Set up database
 
 ```bash
-python -m smtpd -n DebuggingServer localhost:1025
+sqlite3 websites.db < schema.sql
 ```
 
-### Secrets
+### Print database
 
-These are stored in a `.env` file.
-
-```.env
-MAIL_PASSWORD=...
-MAIL_SERVER=...
+```bash
+sqlite3 websites.db < "select * from queries"
 ```
