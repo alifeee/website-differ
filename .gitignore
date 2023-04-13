@@ -2,6 +2,10 @@
 
 # python
 /env
+**/__pycache__
 
 # secrets
 .env
+
+# database
+websites.db
