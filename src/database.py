@@ -150,15 +150,36 @@ class Database:
         return (row[1], row[2], row[3])
 
     def getWebsites(self):
+        """Returns a list of all websites in the database.
+
+        Returns:
+            list<(int, string)>: A list of tuples containing the website ID and URL.
+        """
         query = self.cursor.execute("SELECT * FROM websites")
         rows = query.fetchall()
         return rows
 
     def addWebsite(self, url: str):
+        """Add a website to the database.
+
+        Args:
+            url (str): The website URL.
+
+        Side Effects:
+            Inserts a new row in the `websites` table.
+        """
         self.cursor.execute("INSERT INTO websites (url) VALUES (?)", (url,))
         self.conn.commit()
 
     def removeWebsite(self, id: int):
+        """Remove a website from the database.
+
+        Args:
+            id (int): The website ID.
+
+        Side Effects:
+            Deletes the row in the `websites` table with the given ID.
+        """
         self.cursor.execute("DELETE FROM websites WHERE id=?", (id,))
         self.conn.commit()
 
