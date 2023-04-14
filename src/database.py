@@ -29,7 +29,7 @@ class Database:
         )
         self.conn.commit()
 
-    def add(self, url: str, snapshot: str):
+    def recordSnapshot(self, url: str, snapshot: str):
         snapshot_bytes = snapshot.encode("utf-8")
         snapshot_compressed = zlib.compress(snapshot_bytes)
         query = self.cursor.execute(
@@ -50,7 +50,7 @@ class Database:
         )
         self.conn.commit()
 
-    def getLatest(self, url: str):
+    def getLatestSnapshot(self, url: str):
         query = self.cursor.execute(
             "SELECT * FROM queries WHERE url=? ORDER BY datetime DESC LIMIT 1",
             (url,),

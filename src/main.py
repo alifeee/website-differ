@@ -12,12 +12,12 @@ if __name__ == "__main__":
         raise e from Exception("Error reading urls.txt. Does it exist?")
 
     for url in urls:
-        last_date, last_content = db.getLatest(url)
+        last_date, last_content = db.getLatestSnapshot(url)
 
         r = requests.get(url)
         try:
             website_content = r.text
-            db.add(url, website_content)
+            db.recordSnapshot(url, website_content)
         except Exception as e:
             notify(f"Error for {url}: {e}")
             continue
