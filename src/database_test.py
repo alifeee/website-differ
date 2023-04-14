@@ -97,3 +97,44 @@ class TestDatabase(unittest.TestCase):
         # Assert
         self.assertEqual(ss1, snapshot1)
         self.assertEqual(ss2, snapshot2)
+
+    def test_addWebsite(self):
+        # Arrange
+        url = "https://www.uniquelink4577781235135.com"
+
+        # Act
+        self.db.addWebsite(url)
+
+        # Assert
+        query = self.db.cursor.execute(
+            "SELECT * FROM websites WHERE url=?", (url,)
+        )
+        row = query.fetchone()
+        self.assertIsNotNone(row)
+
+    def test_getWebsites(self):
+        # Arrange
+        url1 = "https://www.uniquelink45777818723.com"
+        url2 = "https://www.uniquelink4519274871.com/2"
+        self.db.addWebsite(url1)
+        self.db.addWebsite(url2)
+
+        # Act
+        websites = self.db.getWebsites()
+
+        # Assert
+        self.assertEqual(websites, [(1, url1), (2, url2)])
+
+    def test_removeWebsite(self):
+        # Arrange
+        url1 = "https://www.uniquelink908190589416.com"
+        url2 = "https://www.uniquelink45731867856.com/2"
+        self.db.addWebsite(url1)
+        self.db.addWebsite(url2)
+
+        # Act
+        self.db.removeWebsite(1)
+
+        # Assert
+        websites = self.db.getWebsites()
+        self.assertEqual(websites, [(2, url2)])

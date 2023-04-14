@@ -13,6 +13,9 @@ class Database:
         self.cursor.execute(
             "CREATE TABLE IF NOT EXISTS snapshots (id INTEGER PRIMARY KEY AUTOINCREMENT, snapshot BLOB NOT NULL)"
         )
+        self.cursor.execute(
+            "CREATE TABLE IF NOT EXISTS websites (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL)"
+        )
         self.conn.commit()
 
     def _encodeSnapshot(self, snapshot: str):
@@ -125,6 +128,19 @@ class Database:
         if row is None:
             raise KeyError(f"Snapshot {id} not found")
         return self._decodeSnapshot(row[1])
+
+    def getWebsites(self):
+        query = self.cursor.execute("SELECT * FROM websites")
+        rows = query.fetchall()
+        return rows
+
+    def addWebsite(self, url: str):
+        self.cursor.execute("INSERT INTO websites (url) VALUES (?)", (url,))
+        self.conn.commit()
+
+    def removeWebsite(self, id: int):
+        self.cursor.execute("DELETE FROM websites WHERE id=?", (id,))
+        self.conn.commit()
 
     def __del__(self):
         self.conn.close()
