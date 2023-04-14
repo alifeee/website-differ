@@ -1,6 +1,6 @@
 import logging
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 from dotenv import load_dotenv
 import os
 
@@ -22,10 +22,18 @@ logging.basicConfig(
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="I am a bot, please talk to me!")
 
+
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+
 if __name__ == '__main__':
     application = ApplicationBuilder().token(api_key).build()
 
     start_handler = CommandHandler('start', start)
     application.add_handler(start_handler)
+
+    echo_filter = filters.TEXT & (~filters.COMMAND)
+    echo_handler = MessageHandler(echo_filter, echo)
+    application.add_handler(echo_handler)
 
     application.run_polling()
