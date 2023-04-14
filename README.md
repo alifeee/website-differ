@@ -1,6 +1,6 @@
 # Web differ
 
-This project takes a snapshot of a website and compares it to a previous snapshot. If the website has changed, it sends a notification.
+This project takes a snapshot of a website and compares it to a previous snapshot. If the website has changed, it sends a notification. See the process outlined in [process.tldr](./process.tldr).
 
 It does not continually run, but is intended to be run as a cron job.
 
