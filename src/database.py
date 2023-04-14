@@ -78,5 +78,14 @@ class Database:
         snapshot = self._decodeSnapshot(row[1])
         return (datetime, snapshot)
 
+    def getSnapshot(self, id: int):
+        query = self.cursor.execute(
+            "SELECT * FROM snapshots WHERE id=?", (id,)
+        )
+        row = query.fetchone()
+        if row is None:
+            raise KeyError(f"Snapshot {id} not found")
+        return self._decodeSnapshot(row[1])
+
     def __del__(self):
         self.conn.close()
