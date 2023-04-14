@@ -1,8 +1,9 @@
-from notifier import notify, notify_file
 import requests
-from database import Database
+from .notifier import notify, notify_file
+from .database import Database
 
-if __name__ == "__main__":
+
+def poll_and_notify():
     db = Database("websites.db")
 
     try:
