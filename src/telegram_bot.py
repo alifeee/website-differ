@@ -9,7 +9,8 @@ try:
     chat_id = os.environ['TELEGRAM_PERSONAL_CHAT_ID']
 except KeyError:
     raise ValueError(
-        "TELEGRAM_BOT_ACCESS_TOKEN not found in environment variables")
+        "Please set the TELEGRAM_BOT_ACCESS_TOKEN and TELEGRAM_PERSONAL_CHAT_ID environment variables."
+    )
 
 
 async def main():

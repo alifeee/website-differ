@@ -63,15 +63,37 @@ pip freeze > requirements.txt
 
 ## Notifications
 
-Notifications are sent via pushbullet. To set up pushbullet via python, you need to set up an access token, found in the [user settings](https://www.pushbullet.com/#settings/account).
-These are stored in a `.env` file.
+Notifications are sent via [Telegram](https://telegram.org/). Secrets are used via environment variables, or a `.env` file, which is not tracked by git.
 
-```.env
-PUSHBULLET_ACCESS_TOKEN=...
-TELEGRAM_BOT_ACCESS_TOKEN=...
+```bash
+touch .env
 ```
 
-See more information on <https://pypi.org/project/pushbullet.py/0.9.1/>.
+```.env
+TELEGRAM_BOT_ACCESS_TOKEN=...
+TELEGRAM_PERSONAL_CHAT_ID=...
+```
+
+### How to get bot access token
+
+See [help page](https://github.com/python-telegram-bot/python-telegram-bot/wiki/Introduction-to-the-API), but in essence, talk to the [BotFather](https://t.me/botfather).
+
+### How to get personal chat ID
+
+See [help page](https://github.com/python-telegram-bot/python-telegram-bot/wiki/Introduction-to-the-API), but in essence, send the bot a message and then use the `getUpdates` method.
+
+```python
+import asyncio
+import telegram
+
+async def main():
+    bot = telegram.Bot("TOKEN")
+    async with bot:
+        print((await bot.get_updates())[0])
+
+if __name__ == '__main__':
+    asyncio.run(main())
+```
 
 ## Database
 
