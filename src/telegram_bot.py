@@ -6,6 +6,7 @@ import os
 load_dotenv()
 try:
     api_key = os.environ['TELEGRAM_BOT_ACCESS_TOKEN']
+    chat_id = os.environ['TELEGRAM_PERSONAL_CHAT_ID']
 except KeyError:
     raise ValueError(
         "TELEGRAM_BOT_ACCESS_TOKEN not found in environment variables")
@@ -14,7 +15,7 @@ except KeyError:
 async def main():
     bot = telegram.Bot(api_key)
     async with bot:
-        print(await bot.get_me())
+        await bot.send_message(chat_id, "Hello World")
 
 if __name__ == '__main__':
     asyncio.run(main())
