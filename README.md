@@ -45,6 +45,7 @@ python src/main.py
 | Name | Version |
 | ---- | ------- |
 | [pushbullet.py](https://github.com/richard-better/pushbullet.py) | 0.12.0 |
+| [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) | 20.2 |
 | [requests](https://github.com/psf/requests) | 2.28.0 |
 | [sqlite3](https://docs.python.org/3/library/sqlite3.html) | base dependency [(pi note)](./SQLITE3_on_PI.md) |
 
@@ -67,6 +68,7 @@ These are stored in a `.env` file.
 
 ```.env
 PUSHBULLET_ACCESS_TOKEN=...
+TELEGRAM_BOT_ACCESS_TOKEN=...
 ```
 
 See more information on <https://pypi.org/project/pushbullet.py/0.9.1/>.
