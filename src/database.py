@@ -129,6 +129,26 @@ class Database:
             raise KeyError(f"Snapshot {id} not found")
         return self._decodeSnapshot(row[1])
 
+    def getQuery(self, id: int):
+        """Returns the query associated with the given id.
+
+        Args:
+            id (int): The query ID.
+
+        Raises:
+            KeyError: If the query is not found.
+
+        Returns:
+            (string, datetime, int): A tuple containing the url, datetime, and snapshot_id of the query.
+        """
+        query = self.cursor.execute(
+            "SELECT * FROM queries WHERE id=?", (id,)
+        )
+        row = query.fetchone()
+        if row is None:
+            raise KeyError(f"Query {id} not found")
+        return (row[1], row[2], row[3])
+
     def getWebsites(self):
         query = self.cursor.execute("SELECT * FROM websites")
         rows = query.fetchall()

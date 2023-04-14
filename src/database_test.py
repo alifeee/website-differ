@@ -98,6 +98,19 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(ss1, snapshot1)
         self.assertEqual(ss2, snapshot2)
 
+    def test_getQuery(self):
+        # Arrange
+        url = "https://www.uniquelink4577787875132.com"
+        snapshot = "Here is a single website"
+        self.db.recordSnapshot(url, snapshot)
+
+        # Act
+        q_url, q_datetime, q_snapshot_id = self.db.getQuery(1)
+
+        # Assert
+        self.assertEqual(q_url, url)
+        self.assertEqual(q_snapshot_id, 1)
+
     def test_addWebsite(self):
         # Arrange
         url = "https://www.uniquelink4577781235135.com"
