@@ -10,25 +10,23 @@ It does not use a headless browser, but instead uses the requests library to get
 
 ## Usage
 
-The website URLs are stored in `urls.txt`, which is not tracked by git.
-
-### `urls.txt`
-
-```txt
-https://www.example.com
-https://www.example.org
-```
-
 ### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
+### Add websites to track
+
+```bash
+py -m src.database_cli websites add <url>
+...
+```
+
 ### Run
 
 ```bash
-python src/main.py
+python ./main.py
 ```
 
 ## Development
@@ -105,7 +103,7 @@ SQLite is used for the database, which is stored in a local file `websites.db`. 
 sqlite3 websites.db < schema.sql
 ```
 
-### Print database
+### View database in terminal
 
 ```bash
 sqlite3 websites.db
@@ -114,4 +112,7 @@ sqlite3 websites.db
 > .headers on
 > SELECT * FROM queries;
 > ...
+> SELECT * FROM websites;
+> ...
+> .quit
 ```
