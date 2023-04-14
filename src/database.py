@@ -40,6 +40,21 @@ class Database:
         snapshot_bytes = zlib.decompress(snapshot_compressed)
         snapshot = snapshot_bytes.decode("utf-8")
         return snapshot
+
+    def recordSnapshot(self, url: str, snapshot: str):
+        """Record a website snapshot in the database.
+
+        Args:
+            url (str): The website URL.
+            snapshot (str): A string of the HTML of the website.
+
+        Returns:
+            int: The ID of the snapshot.
+
+        Side Effects:
+            Inserts a new row in the `snaphots` table if the snapshot is not already in the database.
+            Inserts a new row in the `queries` table.
+        """
         encoded_snapshot = self._encodeSnapshot(snapshot)
         query = self.cursor.execute(
             "SELECT * FROM snapshots WHERE snapshot=?", (encoded_snapshot,)
@@ -58,8 +73,21 @@ class Database:
             (url, datetime.datetime.now(), snapshot_id),
         )
         self.conn.commit()
+        return snapshot_id
 
     def getLatestSnapshot(self, url: str):
+        """Returns the most recent snapshot associated with the given url.
+
+        Args:
+            url (str): The website URL.
+
+        Raises:
+            Exception: If a previous query is found but the snapshot is not found.
+
+        Returns:
+            (datetime, string): A tuple containing the datetime of the snapshot and the snapshot string.
+            Returns (None, None) if no previous query is found.
+        """
         query = self.cursor.execute(
             "SELECT * FROM queries WHERE url=? ORDER BY datetime DESC LIMIT 1",
             (url,),
@@ -79,6 +107,17 @@ class Database:
         return (datetime, snapshot)
 
     def getSnapshot(self, id: int):
+        """Returns the snapshot associated with the given id.
+
+        Args:
+            id (int): The snapshot ID.
+
+        Raises:
+            KeyError: If the snapshot is not found.
+
+        Returns:
+            string: The snapshot string.
+        """
         query = self.cursor.execute(
             "SELECT * FROM snapshots WHERE id=?", (id,)
         )
