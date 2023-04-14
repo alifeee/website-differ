@@ -1,23 +1,24 @@
-from notifier import notify, notify_file
 import requests
-from database import Database
+from .notifier import notify, notify_file
+from .database import Database
 
-if __name__ == "__main__":
+
+def poll_and_notify():
     db = Database("websites.db")
 
-    try:
-        with open("urls.txt", "r") as f:
-            urls = f.read().splitlines()
-    except Exception as e:
-        raise e from Exception("Error reading urls.txt. Does it exist?")
+    websites = db.getWebsites()
+    urls = [website[1] for website in websites]
+
+    if len(urls) == 0:
+        print("No websites found to monitor. See README.md for instructions on how to add websites.")
 
     for url in urls:
-        last_date, last_content = db.getLatest(url)
+        last_date, last_content = db.getLatestSnapshot(url)
 
         r = requests.get(url)
         try:
             website_content = r.text
-            db.add(url, website_content)
+            db.recordSnapshot(url, website_content)
         except Exception as e:
             notify(f"Error for {url}: {e}")
             continue
