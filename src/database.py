@@ -2,20 +2,6 @@ import sqlite3
 import datetime
 import zlib
 
-# database class for
-# CREATE TABLE queries (
-#   id INTEGER PRIMARY KEY AUTOINCREMENT,
-#   url TEXT NOT NULL,
-#   datetime DATETIME NOT NULL,
-#   snapshot_id INTEGER NOT NULL,
-#   FOREIGN KEY (snapshot_id) REFERENCES snapshots(id)
-# );
-
-# CREATE TABLE snapshots (
-#   id INTEGER PRIMARY KEY AUTOINCREMENT,
-#   snapshot BLOB NOT NULL
-# );
-
 
 class Database:
     def __init__(self, db):
@@ -29,16 +15,39 @@ class Database:
         )
         self.conn.commit()
 
-    def recordSnapshot(self, url: str, snapshot: str):
+    def _encodeSnapshot(self, snapshot: str):
+        """Encode a snapshot string by compressing it using the zlib library.
+
+        Args:
+            snapshot (str): A string containing the HTML of a website.
+
+        Returns:
+            bytes: A compressed bytes object representing the encoded snapshot.
+        """
         snapshot_bytes = snapshot.encode("utf-8")
         snapshot_compressed = zlib.compress(snapshot_bytes)
+        return snapshot_compressed
+
+    def _decodeSnapshot(self, snapshot_compressed: bytes):
+        """Decode a compressed snapshot bytes object using the zlib library.
+
+        Args:
+            snapshot_compressed (bytes): A compressed bytes object representing the encoded snapshot.
+
+        Returns:
+            str: A string representing the decoded snapshot.
+        """
+        snapshot_bytes = zlib.decompress(snapshot_compressed)
+        snapshot = snapshot_bytes.decode("utf-8")
+        return snapshot
+        encoded_snapshot = self._encodeSnapshot(snapshot)
         query = self.cursor.execute(
-            "SELECT * FROM snapshots WHERE snapshot=?", (snapshot_compressed,)
+            "SELECT * FROM snapshots WHERE snapshot=?", (encoded_snapshot,)
         )
         row = query.fetchone()
         if row is None:
             self.cursor.execute(
-                "INSERT INTO snapshots (snapshot) VALUES (?)", (snapshot_compressed,)
+                "INSERT INTO snapshots (snapshot) VALUES (?)", (encoded_snapshot,)
             )
             self.conn.commit()
             snapshot_id = self.cursor.lastrowid
@@ -66,9 +75,7 @@ class Database:
         row = query.fetchone()
         if row is None:
             raise Exception("Snapshot not found")
-        snapshot_compressed = row[1]
-        snapshot_bytes = zlib.decompress(snapshot_compressed)
-        snapshot = snapshot_bytes.decode("utf-8")
+        snapshot = self._decodeSnapshot(row[1])
         return (datetime, snapshot)
 
     def __del__(self):
