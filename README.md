@@ -22,7 +22,9 @@ playwright install
 ### Run
 
 ```bash
-# todo
+mkdir snapshots
+echo "id,url,css_selector\n" > sites.csv
+py ./server.py
 ```
 
 ## Development
