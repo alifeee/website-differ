@@ -7,5 +7,6 @@
 # secrets
 /.env
 
-# database
-/websites.db
+# data
+/snapshots
+/sites.csv
