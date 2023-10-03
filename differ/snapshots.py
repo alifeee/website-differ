@@ -1,8 +1,7 @@
 """Functions for saving and loading snapshots of webpages."""
+import os
 from typing import List, Optional
-
-
-SNAPSHOTS_DIR = "snapshots"
+import math
 
 
 def canonicalize_url(url: str) -> str:

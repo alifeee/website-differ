@@ -6,13 +6,14 @@ from typing import Optional
 from playwright.sync_api import sync_playwright
 
 from .snapshots import (
-    SNAPSHOTS_DIR,
     snapshot_fnames_for_url,
     last_snapshot_fname,
     next_snapshot_fname,
 )
 from .comparer import html_to_bs4, is_different
 from .notifier import NotifierInterface, PrintNotifier
+
+SNAPSHOTS_DIR = "snapshots"
 
 
 def get_page_html(url: str) -> str:
@@ -62,6 +63,9 @@ def main(
     notif.notify(f"Getting html for {url}", 0)
     html = get_page_html(url)
     soup = html_to_bs4(html, css_selector)
+    if soup is None:
+        notif.notify(f"Could not find element with selector {css_selector}", 0)
+        return False
 
     all_files = os.listdir(SNAPSHOTS_DIR)
     ss_files = snapshot_fnames_for_url(all_files, url)

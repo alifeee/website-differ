@@ -1,17 +1,17 @@
 """Functions for comparing webpages (html strings)"""
 from typing import Optional
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 
 def is_different(
-    soup1: BeautifulSoup,
-    soup2: BeautifulSoup,
+    soup1: Tag,
+    soup2: Tag,
 ) -> bool:
     """Compare two html
 
     Args:
-        soup1 (BeautifulSoup): html of first page (BeautifulSoup)
-        soup2 (BeautifulSoup): html of second page (BeautifulSoup)
+        soup1 (Tag): html of first page (BeautifulSoup)
+        soup2 (Tag): html of second page (BeautifulSoup)
 
     Returns:
         bool: True if different, False if same
@@ -19,7 +19,7 @@ def is_different(
     return soup1 != soup2
 
 
-def html_to_bs4(html: str, css_selector: Optional[str] = None):
+def html_to_bs4(html: str, css_selector: Optional[str] = None) -> Optional[Tag]:
     """Convert html to BeautifulSoup object
 
     Args:
@@ -28,7 +28,7 @@ def html_to_bs4(html: str, css_selector: Optional[str] = None):
             Defaults to None.
 
     Returns:
-        BeautifulSoup:
+        Tag:
     """
     soup = BeautifulSoup(html, "html.parser")
     if css_selector is not None:

@@ -1,1 +1,9 @@
 https://github.com/gildas-lormeau/single-file-cli
+
+differ:
+python
+https://docs.python.org/3/library/difflib.html
+js
+https://github.com/cemerick/jsdifflib
+https://www.npmjs.com/package/prettydiff
+https://github.com/rtfpessoa/diff2html

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>alifeee - web tracker</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Josefin+Sans|Roboto"
+    />
+
+    <script
+      src="https://unpkg.com/htmx.org@1.9.6"
+      integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+  </head>
+  <body>
+    <header></header>
+
+    <main>
+      <h2>Tracked Websites</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>URL</th>
+            <th>CSS Selector</th>
+            <th>Last Updated</th>
+            <th>Storage used</th>
+            <th></th>
+          </tr>
+          <tr hx-get="/websites" hx-trigger="load" hx-swap="outerHTML"></tr>
+          <tr id="nextsite"></tr>
+          <tr>
+            <form
+              hx-post="/add_site"
+              hx-target="#nextsite"
+              hx-swap="beforebegin"
+              hx-on::after-request=" if(event.detail.successful) this.reset()"
+            >
+              <td>
+                <input
+                  type="text"
+                  name="url"
+                  placeholder="https://example.com"
+                  required
+                  type="url"
+                  pattern="https?://.+"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="css_selector"
+                  placeholder=".selector"
+                />
+              </td>
+              <td>
+                <button type="submit">
+                  Track
+                  <img
+                    class="htmx-indicator"
+                    src="./three-dots.svg"
+                    height="1rem"
+                    width="1rem"
+                  />
+                </button>
+              </td>
+            </form>
+          </tr>
+        </thead>
+      </table>
+    </main>
+
+    <script
+      src="moz-extension://4d35079a-9c9a-43bf-809e-f58eb68e0165/js/app.js"
+      type="text/javascript"
+    ></script>
+  </body>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Roboto", sans-serif;
+      color: #333;
+      background-color: #fff;
+    }
+
+    main {
+      max-width: 40rem;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+  </style>
+</html>

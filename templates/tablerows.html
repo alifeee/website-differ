@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% for site in sites %}
+<tr id="site-{{ site.id }}">
+  <td>
+    <a href="{{ site.url }}">{{ site.url }}</a>
+  </td>
+  <td>{{ site.css_selector }}</td>
+  <td>
+    {% if site.most_recent_snapshot_fname %}
+    <a
+      href="{{ SNAPSHOTS_DIR }}/{{ site.most_recent_snapshot_fname }}"
+      target="_blank"
+    >
+      <time datetime="{{ site.last_edited }}">{{ site.last_edited }}</time>
+    </a>
+    {% else %}
+    <time datetime="{{ site.last_edited }}">{{ site.last_edited }}</time>
+    {% endif %}
+  </td>
+  <td>{{ site.total_filesize_str }}</td>
+  <td>
+    <button
+      hx-delete="/remove_site/{{ site.id }}"
+      hx-confirm="Remove {{ site.url }}?"
+      hx-trigger="click"
+      hx-target="#site-{{ site.id }}"
+      hx-swap="innerHTML"
+    >
+      Delete
+    </button>
+  </td>
+</tr>
+{% endfor %}
