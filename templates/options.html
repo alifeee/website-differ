@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+{% if include_empty %}
+    <option value=""></option>
+{% endif %}
+{% for value,label in options %}
+    {% if selected_value == value %}
+    <option value="{{ value }}" selected>{{ label }}</option>
+    {% else %}
+    <option value="{{ value }}">{{ label }}</option>
+    {% endif %}
+{% endfor %}

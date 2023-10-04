@@ -1,11 +1,14 @@
 """Server for the web differ
 Allowing user to view files, edit tracked websites, and view diffs
 """
+from datetime import datetime
+import difflib
 import sys
 import os
 
 from waitress import serve
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, abort
+from differ.snapshots import filename_to_version, snapshot_fnames_for_url
 
 import differ.tracking as tracking
 from differ.differ import SNAPSHOTS_DIR
@@ -28,7 +31,11 @@ def index():
 @app.route("/<path:filename>")
 def static_files(filename):
     """Serve static files"""
-    return send_file(os.path.join("static", filename))
+    desired_file = os.path.join("static", filename)
+    if os.path.isfile(desired_file):
+        return send_file(desired_file)
+    else:
+        abort(404)
 
 
 @app.route("/snapshots/<path:filename>")
@@ -50,6 +57,78 @@ def tracked_sites():
         sites=sites,
         SNAPSHOTS_DIR=SNAPSHOTS_DIR,
     )
+
+
+@app.get("/urls")
+def urls():
+    """Return a list of tracked sites"""
+    all_urls = [site.url for site in tracking.get_sites()]
+    return render_template(
+        "options.html",
+        options=zip(all_urls, all_urls),
+        include_empty=True,
+    )
+
+
+@app.get("/versions_selects")
+def versions_selects():
+    """Return two selects for version"""
+    url = request.args.get("url")
+    if url == "":
+        return ""
+    all_snapshots = os.listdir(SNAPSHOTS_DIR)
+    url_snapshots = snapshot_fnames_for_url(all_snapshots, url)
+
+    url_modified_times_timestamp = [
+        os.path.getmtime(os.path.join(SNAPSHOTS_DIR, fname)) for fname in url_snapshots
+    ]
+    url_modified_times = [
+        datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        for timestamp in url_modified_times_timestamp
+    ]
+
+    select1 = "<select id='form_from' name='from' _='on change log 1'>"
+    select1 += render_template(
+        "options.html",
+        options=zip(url_snapshots, url_modified_times),
+        selected_value=url_snapshots[-2] if len(url_snapshots) > 1 else None,
+    )
+    select1 += "</select>"
+    select2 = "<select id='form_to' name='to'>"
+    select2 += render_template(
+        "options.html",
+        options=zip(url_snapshots, url_modified_times),
+        selected_value=url_snapshots[-1] if len(url_snapshots) > 0 else None,
+    )
+    select2 += "</select>"
+    return select1 + " to " + select2
+
+
+@app.get("/compare")
+def compare():
+    """Compare two snapshots"""
+    # url = request.args.get("url")
+    fromfname = request.args.get("from")
+    tofname = request.args.get("to")
+    colwidth = int(request.args.get("colwidth"))
+
+    if fromfname is None or tofname is None:
+        return "Please select two snapshots to compare"
+    elif fromfname == tofname:
+        return "Snapshots are the same!"
+
+    fromfile = os.path.join(SNAPSHOTS_DIR, fromfname)
+    tofile = os.path.join(SNAPSHOTS_DIR, tofname)
+
+    with open(fromfile, "r", encoding="utf-8") as file:
+        fromlines = file.readlines()
+    with open(tofile, "r", encoding="utf-8") as file:
+        tolines = file.readlines()
+
+    diff = difflib.HtmlDiff(wrapcolumn=colwidth).make_file(
+        fromlines, tolines, fromfile, tofile
+    )
+    return diff
 
 
 @app.post("/add_site")
@@ -74,8 +153,8 @@ def remove_site(_id):
     print("\n", _id)
     success = tracking.remove_site(_id)
     if success is True:
-        return """<span _='init wait 2s 
-        then transition opacity to 0 
+        return """<span _='init wait 2s
+        then transition opacity to 0
         then remove the closest parent <tr/>
         '>Deleted!</span>"""
     elif success is False:
