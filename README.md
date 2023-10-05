@@ -8,20 +8,13 @@ This project is a frontend for keeping track of static websites to see if they c
 
 ## Usage
 
-### Install dependencies
+### Install
 
 ```bash
+python3 -m venv env
+source env/bin/activate
 pip install -r requirements.txt
 playwright install
-```
-
-### Add websites to track
-
-Use the web client.
-
-### Run
-
-```bash
 mkdir snapshots
 echo "id,url,css_selector\n" > sites.csv
 py ./server.py
