@@ -16,6 +16,7 @@ class NotifierInterface:
     def notify(self, message, level=0):
         """Notify the user about the message."""
         if level >= self.level:
+            print(message)
             self._notify(message)
 
     def _notify(self, message):
