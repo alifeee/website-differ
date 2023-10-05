@@ -1,8 +1,8 @@
 """Different notifier implementations."""
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 from pushbullet import Pushbullet
-from datetime import datetime
 
 load_dotenv()
 
