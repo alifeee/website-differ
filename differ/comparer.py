@@ -16,7 +16,7 @@ def is_different(
     Returns:
         bool: True if different, False if same
     """
-    return soup1 != soup2
+    return str(soup1) != str(soup2)
 
 
 def html_to_bs4(html: str, css_selector: Optional[str] = None) -> Optional[Tag]:
