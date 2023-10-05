@@ -28,7 +28,7 @@ crontab -e
 
 ```bash
 # Run every day
-0 12 * * * cd /path/to/web-differ && /usr/bin/python3 /path/to/web-differ/snapshotall.py >> /path/to/web-differ/cron.log 2>&1
+0 12 * * * cd /root/python/website-differ && source env/bin/activate && python3 /root/python/website-differ/snapshotall.py >> /root/python/website-differ/cron.log 2>&1
 ```
 
 ## Development
