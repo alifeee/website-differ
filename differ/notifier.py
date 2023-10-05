@@ -2,6 +2,7 @@
 import os
 from dotenv import load_dotenv
 from pushbullet import Pushbullet
+from datetime import datetime
 
 load_dotenv()
 
@@ -15,7 +16,7 @@ class NotifierInterface:
 
     def notify(self, message, level=0):
         """Notify the user about the message."""
-        print(message)
+        print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {message}")
         if level >= self.level:
             self._notify(message)
 
