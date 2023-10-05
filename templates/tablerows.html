@@ -2,23 +2,36 @@
 {% for site in sites %}
 <tr id="site-{{ site.id }}">
   <td>
-    <a href="{{ site.url }}">{{ site.url }}</a>
+    <a href="{{ site.url }}" target="_blank">{{ site.url }}</a>
   </td>
   <td>{{ site.css_selector }}</td>
   <td>
-    {% if site.most_recent_snapshot_fname %}
-    <a
-      href="{{ SNAPSHOTS_DIR }}/{{ site.most_recent_snapshot_fname }}"
-      target="_blank"
+    {% if site.snapshots %}
+    <div
+      x-data="{file: '{{ site.snapshots[-1].fname }}'}"
+      style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center"
     >
-      <time datetime="{{ site.last_edited }}">{{ site.last_edited }}</time>
-    </a>
+      <span>{{ site.snapshots|length }} </span>
+      <select x-model="file" style="max-width: 10rem">
+        {% for snapshot in site.snapshots %}
+        <option value="{{ snapshot.fname }}">
+          {{ snapshot.date_modified }}
+        </option>
+        {% endfor %}
+      </select>
+      <a
+        :href="'{{ SNAPSHOTS_DIR }}/' + encodeURIComponent(file)"
+        target="_blank"
+      >
+        <button>open↪</button>
+      </a>
+    </div>
     {% else %}
-    <time datetime="{{ site.last_edited }}">{{ site.last_edited }}</time>
+    <span>No snapshots</span>
     {% endif %}
   </td>
   <td>{{ site.total_filesize_str }}</td>
-  <td>
+  <td style="font-size: 1em">
     <button
       hx-delete="/remove_site/{{ site.id }}"
       hx-confirm="Remove {{ site.url }}?"
@@ -28,6 +41,31 @@
     >
       Delete
     </button>
+    <button
+      hx-delete="/cleanup/{{ site.id }}"
+      hx-confirm="Remove all snapshots for {{ site.url }}?"
+      hx-trigger="click"
+      hx-target="#site-{{ site.id }}"
+      hx-swap="outerHTML"
+    >
+      Cleanup
+    </button>
+  </td>
+  <td>
+    <button
+      id="take_snapshot-{{ site.id }}"
+      hx-post="/take_snapshot/{{ site.id }}"
+      hx-confirm="Take snapshot for {{ site.url }}?"
+      hx-trigger="click"
+      hx-target="#site-{{ site.id }}"
+      hx-swap="outerHTML"
+      data-loading-aria-busy
+    >
+      Snapshot
+    </button>
+    <a href="/compare.html">
+      <button>Compare↪</button>
+    </a>
   </td>
 </tr>
 {% endfor %}

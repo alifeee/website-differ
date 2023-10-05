@@ -12,15 +12,22 @@ TRACKING_FILE = "sites.csv"
 
 
 @dataclass
+class Snapshot:
+    """Dataclass for a snapshot"""
+
+    fname: str
+    date_modified: datetime
+
+
+@dataclass
 class Site:
     """Dataclass for a tracked site"""
 
     id: str
     url: str
     css_selector: str
-    last_edited: Union[Optional[datetime], str] = None
     total_filesize: Optional[int] = None
-    most_recent_snapshot_fname: Optional[str] = None
+    snapshots: Optional[List[Snapshot]] = None
 
     @property
     def total_filesize_str(self) -> str:
@@ -105,7 +112,6 @@ def populate_sites_with_more_info(sites: List[Site], snapshot_directory: str):
         url = site.url
         # get all snapshots for this site
         ss_fnames = snapshot_fnames_for_url(all_fnames, url)
-        last_ss_fname = last_snapshot_fname(ss_fnames)
 
         # compute storage of all files
         storage = 0
@@ -113,18 +119,17 @@ def populate_sites_with_more_info(sites: List[Site], snapshot_directory: str):
             fpath = os.path.join(snapshot_directory, fname)
             storage += os.path.getsize(fpath)
 
-        # most recent snapshot date modified
-        if last_ss_fname is None:
-            last_ss_date = None
-        else:
-            last_ss_fpath = os.path.join(snapshot_directory, last_ss_fname)
-            last_ss_date = os.path.getmtime(last_ss_fpath)
+        # snapshot date modified
+        def last_modified(fname: str) -> datetime:
+            fpath = os.path.join(snapshot_directory, fname)
+            return datetime.fromtimestamp(os.path.getmtime(fpath))
 
-        site.most_recent_snapshot_fname = last_ss_fname
+        snapshots = [
+            Snapshot(fname=fname, date_modified=last_modified(fname))
+            for fname in ss_fnames
+        ]
 
-        site.last_edited = (
-            "Never" if last_ss_date is None else datetime.fromtimestamp(last_ss_date)
-        )
+        site.snapshots = snapshots
         site.total_filesize = storage
 
 

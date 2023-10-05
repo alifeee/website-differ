@@ -64,7 +64,9 @@ def main(
     html = get_page_html(url)
     soup = html_to_bs4(html, css_selector)
     if soup is None:
-        notif.notify(f"Could not find element with selector {css_selector}", 0)
+        notif.notify(
+            f"Could not find element with selector {css_selector} in {url}.", 1
+        )
         return False
 
     all_files = os.listdir(SNAPSHOTS_DIR)
@@ -87,13 +89,18 @@ def main(
     last_snapshot_soup = html_to_bs4(last_snapshot_html, css_selector)
 
     if is_different(soup, last_snapshot_soup):
-        notif.notify("HTML is different from last snapshot. Saving snapshot.", 1)
+        notif.notify(
+            f"""New content for {url}! Snapshot saved.
+                     View on https://server.alifeee.co.uk:5616/
+                     """,
+            1,
+        )
         with open(next_ss_fpath, "w", encoding="utf-8") as file:
             file.write(str(soup))
         return True
 
     notif.notify("HTML is the same as last snapshot. Doing nothing.", 0)
-    return False
+    return True
 
 
 if __name__ == "__main__":

@@ -10,69 +10,88 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Josefin+Sans|Roboto"
     />
+    <link rel="stylesheet" href="pico.min.css" />
 
     <script
       src="https://unpkg.com/htmx.org@1.9.6"
       integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
       crossorigin="anonymous"
     ></script>
-    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
-  </head>
-  <body>
-    <header></header>
+    <script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script>
 
-    <main>
+    <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+  </head>
+  <body hx-ext="loading-states">
+    <nav aria-label="breadcrumb" class="container">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/compare.html">Compare</a></li>
+      </ul>
+    </nav>
+    <main class="container-fluid">
       <h2>Tracked Websites</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>URL</th>
-            <th>CSS Selector</th>
-            <th>Last Updated</th>
-            <th>Storage used</th>
-            <th></th>
-          </tr>
-          <tr hx-get="/websites" hx-trigger="load" hx-swap="outerHTML"></tr>
-          <tr id="nextsite"></tr>
-          <tr>
-            <form
-              hx-post="/add_site"
-              hx-target="#nextsite"
-              hx-swap="beforebegin"
-              hx-on::after-request=" if(event.detail.successful) this.reset()"
-            >
-              <td>
-                <input
-                  type="text"
-                  name="url"
-                  placeholder="https://example.com"
-                  required
-                  type="url"
-                  pattern="https?://.+"
-                />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  name="css_selector"
-                  placeholder=".selector"
-                />
-              </td>
-              <td>
-                <button type="submit">
-                  Track
-                  <img
-                    class="htmx-indicator"
-                    src="./three-dots.svg"
-                    height="1rem"
-                    width="1rem"
-                  />
+      <figure>
+        <table>
+          <thead>
+            <tr>
+              <th>URL</th>
+              <th>CSS Selector</th>
+              <th>Snapshots</th>
+              <th>Storage</th>
+              <th></th>
+              <th>
+                <button
+                  hx-post="/take_snapshots"
+                  hx-confirm="Take snapshots for all sites?"
+                  hx-trigger="click"
+                  hx-target="#tabletop"
+                  hx-swap="afterend"
+                  data-loading-aria-busy
+                >
+                  Take snapshots
                 </button>
-              </td>
-            </form>
-          </tr>
-        </thead>
-      </table>
+              </th>
+            </tr>
+            <tr
+              id="tabletop"
+              hx-get="/websites"
+              hx-trigger="load"
+              hx-swap="afterend"
+            ></tr>
+            <tr id="nextsite"></tr>
+            <tr>
+              <form
+                hx-post="/add_site"
+                hx-target="#nextsite"
+                hx-swap="beforebegin"
+                hx-on::after-request=" if(event.detail.successful) this.reset()"
+              >
+                <td>
+                  <input
+                    type="text"
+                    name="url"
+                    placeholder="https://example.com"
+                    required
+                    type="url"
+                    pattern="https?://.+"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    name="css_selector"
+                    placeholder=".selector"
+                  />
+                </td>
+                <td>
+                  <button type="submit" data-loading-aria-busy>Track</button>
+                </td>
+              </form>
+            </tr>
+          </thead>
+        </table>
+      </figure>
       <p>
         <a href="./compare.html" style="text-align: center; margin: auto">
           Go to compare page
@@ -86,22 +105,11 @@
     ></script>
   </body>
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --font-size: 12px;
     }
-
     body {
-      margin: 0;
-      padding: 0;
-      font-family: "Roboto", sans-serif;
-      color: #333;
-      background-color: #fff;
-    }
-
-    main {
-      max-width: 40rem;
-      margin: 2rem auto;
-      padding: 0 1rem;
+      font-family: "Josefin Sans", sans-serif;
     }
   </style>
 </html>

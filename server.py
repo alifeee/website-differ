@@ -9,6 +9,8 @@ import os
 from waitress import serve
 from flask import Flask, render_template, request, send_file, abort
 from differ.snapshots import filename_to_version, snapshot_fnames_for_url
+from differ.differ import main as differ_snapshot
+import snapshotall
 
 import differ.tracking as tracking
 from differ.differ import SNAPSHOTS_DIR
@@ -41,7 +43,11 @@ def static_files(filename):
 @app.route("/snapshots/<path:filename>")
 def snapshots(filename):
     """Serve a snapshot file"""
-    return send_file(os.path.join(SNAPSHOTS_DIR, filename))
+    desired_file = os.path.join(SNAPSHOTS_DIR, filename)
+    if os.path.isfile(desired_file):
+        return send_file(desired_file)
+    else:
+        abort(404)
 
 
 @app.get("/websites")
@@ -125,9 +131,15 @@ def compare():
     with open(tofile, "r", encoding="utf-8") as file:
         tolines = file.readlines()
 
-    diff = difflib.HtmlDiff(wrapcolumn=colwidth).make_file(
-        fromlines, tolines, fromfile, tofile
-    )
+    try:
+        diff = difflib.HtmlDiff(wrapcolumn=colwidth).make_file(
+            fromlines, tolines, fromfile, tofile
+        )
+    except RecursionError:
+        return """Something went wrong with difflib and recursion. :(
+            The file you're comparing is probably one long line.
+            Try increasing the column width.
+            """
     return diff
 
 
@@ -150,7 +162,12 @@ def add_site():
 @app.delete("/remove_site/<_id>")
 def remove_site(_id):
     """Remove a site from tracking"""
-    print("\n", _id)
+    sites = tracking.get_sites()
+    site = next(site for site in sites if site.id == _id)
+    all_snapshots = os.listdir(SNAPSHOTS_DIR)
+    url_snapshots = snapshot_fnames_for_url(all_snapshots, site.url)
+    for fname in url_snapshots:
+        os.remove(os.path.join(SNAPSHOTS_DIR, fname))
     success = tracking.remove_site(_id)
     if success is True:
         return """<span _='init wait 2s
@@ -161,8 +178,61 @@ def remove_site(_id):
         return "Failed to delete! Refresh page..."
 
 
+@app.delete("/cleanup/<_id>")
+def cleanup(_id):
+    """Remove all snapshots for a site"""
+    sites = tracking.get_sites()
+    site = next(site for site in sites if site.id == _id)
+    all_snapshots = os.listdir(SNAPSHOTS_DIR)
+    url_snapshots = snapshot_fnames_for_url(all_snapshots, site.url)
+    for fname in url_snapshots:
+        os.remove(os.path.join(SNAPSHOTS_DIR, fname))
+    tracking.populate_sites_with_more_info(
+        snapshot_directory=SNAPSHOTS_DIR, sites=[site]
+    )
+    return render_template(
+        "tablerows.html",
+        sites=[site],
+        SNAPSHOTS_DIR=SNAPSHOTS_DIR,
+    )
+
+
+@app.post("/take_snapshots")
+def take_snapshots():
+    """Take snapshots of all sites"""
+    snapshotall.take_all_snapshots()
+    sites = tracking.get_sites()
+    tracking.populate_sites_with_more_info(
+        snapshot_directory=SNAPSHOTS_DIR, sites=sites
+    )
+    return render_template(
+        "tablerows.html",
+        sites=sites,
+        SNAPSHOTS_DIR=SNAPSHOTS_DIR,
+    )
+
+
+@app.post("/take_snapshot/<_id>")
+def take_snapshot(_id):
+    """Take a snapshot of a site"""
+    sites = tracking.get_sites()
+    site = next(site for site in sites if site.id == _id)
+    success = differ_snapshot(site.url, site.css_selector)
+    tracking.populate_sites_with_more_info(
+        snapshot_directory=SNAPSHOTS_DIR, sites=[site]
+    )
+    if success is True:
+        return render_template(
+            "tablerows.html",
+            sites=[site],
+            SNAPSHOTS_DIR=SNAPSHOTS_DIR,
+        )
+    elif success is False:
+        return "Failed to take snapshot! Refresh page..."
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "debug":
-        app.run(debug=True, host="0.0.0.0")
+        app.run(debug=True, host="0.0.0.0", port=5616)
     else:
         serve(app, host="0.0.0.0", port=5616)
