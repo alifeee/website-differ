@@ -86,7 +86,7 @@ def main(
     with open(last_ss_fpath, "r", encoding="utf-8") as file:
         last_snapshot_html = file.read()
 
-    last_snapshot_soup = html_to_bs4(last_snapshot_html, css_selector)
+    last_snapshot_soup = html_to_bs4(last_snapshot_html)
 
     if is_different(soup, last_snapshot_soup):
         notif.notify(
