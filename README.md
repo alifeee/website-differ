@@ -1,8 +1,10 @@
 # Web differ
 
-This project takes a snapshot of a website and compares it to a previous snapshot. If the website has changed, it sends a notification.
+This project is a frontend for keeping track of static websites to see if they change.
 
-It does not continually run, but is intended to be run as a cron job.
+<http://server.alifeee.co.uk:5616>
+
+![Screenshot of frontend](images/frontend_screenshot.png)
 
 ## Usage
 
@@ -15,9 +17,7 @@ playwright install
 
 ### Add websites to track
 
-```bash
-# todo
-```
+Use the web client.
 
 ### Run
 
@@ -25,6 +25,17 @@ playwright install
 mkdir snapshots
 echo "id,url,css_selector\n" > sites.csv
 py ./server.py
+```
+
+Set up cron
+
+```bash
+crontab -e
+```
+
+```bash
+# Run every day
+0 12 * * * cd /path/to/web-differ && /usr/bin/python3 /path/to/web-differ/snapshotall.py >> /path/to/web-differ/cron.log 2>&1
 ```
 
 ## Development
