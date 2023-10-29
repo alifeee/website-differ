@@ -91,7 +91,7 @@ def main(
     if is_different(soup, last_snapshot_soup):
         notif.notify(
             f"""New content for {url}! Snapshot saved.
-                     View on https://server.alifeee.co.uk:5616/
+                     View on http://server.alifeee.co.uk:5616/
                      """,
             1,
         )
