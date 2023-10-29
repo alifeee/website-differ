@@ -53,6 +53,12 @@ class Site:
 def get_sites() -> list[Site]:
     """Return a list of sites to track"""
     sites = []
+    # if file does not exist, make it
+    if not os.path.exists(TRACKING_FILE):
+        with open(TRACKING_FILE, "w", encoding="utf-8", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=["id", "url", "css_selector"])
+            writer.writeheader()
+        return sites
     with open(TRACKING_FILE, "r", encoding="utf-8") as file:
         # with header row
         reader = csv.DictReader(file)
@@ -106,6 +112,8 @@ def populate_sites_with_more_info(sites: List[Site], snapshot_directory: str):
         sites (List[Site]): Sites to populate
         snapshot_directory (str): Directory to look for snapshots in
     """
+    if not os.path.exists(snapshot_directory):
+        os.mkdir(snapshot_directory)
     all_fnames = os.listdir(snapshot_directory)
 
     for site in sites:
