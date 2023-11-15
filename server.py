@@ -235,4 +235,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "debug":
         app.run(debug=True, host="0.0.0.0", port=5616)
     else:
+        print("Server running on http://localhost:5616")
         serve(app, host="0.0.0.0", port=5616)
