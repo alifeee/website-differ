@@ -26,9 +26,12 @@ Set up cron
 crontab -e
 ```
 
+Backup tracked websites, then run the differ to check for new content.
+
 ```bash
 # Run every day
-0 12 * * * cd /root/python/website-differ && source env/bin/activate && python3 /root/python/website-differ/snapshotall.py >> /root/python/website-differ/cron.log 2>&1
+0 12 * * * /root/python/website-differ/backup.sh >> /root/python/website-differ/cron.log 2>&1
+0 12 * * * /root/python/website-differ/rundiffer.sh >> /root/python/website-differ/cron.log 2>&1
 ```
 
 ## Development
