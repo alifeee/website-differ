@@ -10,3 +10,4 @@
 # data
 /snapshots
 /sites.csv
+/cron.log

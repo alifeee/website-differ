@@ -20,6 +20,14 @@ echo "id,url,css_selector\n" > sites.csv
 py ./server.py
 ```
 
+#### Use service
+
+```bash
+cp website-differ.service /etc/systemd/system/website-differ.service
+sudo systemctl enable website-differ.service
+sudo systemctl start website-differ.service
+```
+
 Set up cron
 
 ```bash

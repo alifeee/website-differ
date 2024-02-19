@@ -1,0 +1,13 @@
+[Unit]
+Description=Website difference tracker, taking daily snapshots
+After=network.target
+
+[Service]
+ExecStart=/root/python/website-differ/env/bin/python server.py
+WorkingDirectory=/root/python/website-differ
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
