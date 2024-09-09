@@ -2,7 +2,7 @@
 
 This project is a frontend for keeping track of static websites to see if they change.
 
-<http://server.alifeee.co.uk:5616>
+Also see/consider using <https://github.com/dgtlmoon/changedetection.io>
 
 ![Screenshot of frontend](images/frontend_screenshot.png)
 
