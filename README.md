@@ -1,3 +1,5 @@
+> [!CAUTION]
+> MOVED! see <https://git.alifeee.net/website-differ/about/>
 # Web differ
 
 This project is a frontend for keeping track of static websites to see if they change.
